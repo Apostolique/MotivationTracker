@@ -6,6 +6,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using SpriteFontPlus;
+using System.IO;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -51,6 +52,16 @@ namespace GameProject {
                 }
             }
 
+            if (_save.Pressed()) {
+                DateTime now = DateTime.Now;
+                int year = now.Year;
+                int month = now.Month;
+                int day = now.Day;
+                string name = $"{year}-{month}-{day}";
+                using Stream file = File.OpenWrite($"{name}.png");
+                _r.SaveAsPng(file, _width, _height);
+            }
+
             InputHelper.UpdateCleanup();
             base.Update(gameTime);
         }
@@ -79,6 +90,7 @@ namespace GameProject {
                     }
                 }
             }
+            _s.DrawString(Assets.Font, DateTime.Now.ToLongDateString(), new Vector2(50, 50), Color.White);
 
             _s.End();
 
@@ -89,7 +101,7 @@ namespace GameProject {
             _s.Draw(_r, bounds, Color.White);
             _s.DrawRectangle(bounds, Color.White * 0.2f, 4);
             if (_hovered.HasValue) {
-                _s.DrawString(Assets.Font, pointToDateName(_hovered.Value), new Vector2(50, 50), Color.White);
+                _s.DrawString(Assets.Font, pointToDateName(_hovered.Value), new Vector2(50, Window.ClientBounds.Height - 50), Color.White);
             }
             _s.End();
 
@@ -166,5 +178,14 @@ namespace GameProject {
             );
 
         ICondition _click = new MouseCondition(MouseButton.LeftButton);
+
+        ICondition _save =
+            new AllCondition(
+                new AnyCondition(
+                    new KeyboardCondition(Keys.LeftControl),
+                    new KeyboardCondition(Keys.RightControl)
+                ),
+                new KeyboardCondition(Keys.S)
+            );
     }
 }
