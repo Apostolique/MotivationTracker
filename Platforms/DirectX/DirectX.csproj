@@ -16,6 +16,7 @@
     <PackageReference Include="Apos.Content.Read" Version="0.1.1" />
     <PackageReference Include="Apos.Input" Version="1.0.0" />
     <PackageReference Include="MonoGame.Extended" Version="3.7.0" />
+    <PackageReference Include="SpriteFontPlus" Version="0.8.0.38" />
   </ItemGroup>
 
   <ItemGroup>
