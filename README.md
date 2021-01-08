@@ -6,3 +6,7 @@ Simple application to track days working on something.
 The idea is based on the [The Every Day Calendar](https://www.kickstarter.com/projects/simonegiertz/the-every-day-calendar). The purpose is to make it easier to keep track of a specific goal. You can visualize the whole year and watch your progress throughout.
 
 ![Preview](./Images/Preview.png)
+
+## Release
+
+Find the builds on [apos.itch.io/motivationtracker](https://apos.itch.io/motivationtracker).
