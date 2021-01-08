@@ -1,12 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Apos.Input;
+using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Apos.Input;
 using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using SpriteFontPlus;
-using System.IO;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -29,7 +29,7 @@ namespace GameProject {
             _maxDays = maxDays(_year);
             _daySize = Math.Min(RealWidth / _maxDays, RealHeight / 12);
 
-            Assets.Setup(Content);
+            Assets.Setup(Content, GraphicsDevice);
 
             InputHelper.Setup(this);
         }
