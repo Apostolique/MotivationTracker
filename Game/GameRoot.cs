@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using Apos.Input;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
@@ -31,6 +32,15 @@ namespace GameProject {
 
             Assets.Setup(Content, GraphicsDevice);
 
+            Calendar c = LoadJson<Calendar>(GetPath(_calendarName));
+
+            foreach (Calendar.Point cp in c.ActiveDays) {
+                Point p = new Point(cp.X, cp.Y);
+                if (!_highlightedDays.Contains(p)) {
+                    _highlightedDays.Add(p);
+                }
+            }
+
             InputHelper.Setup(this);
         }
 
@@ -58,8 +68,21 @@ namespace GameProject {
                 int month = now.Month;
                 int day = now.Day;
                 string name = $"{year}-{month}-{day}";
-                using Stream file = File.OpenWrite($"{name}.png");
+                string imageName = $"{name}.png";
+                using Stream file = File.OpenWrite(GetPath(imageName));
                 _r.SaveAsPng(file, _width, _height);
+
+                Calendar c = new Calendar();
+
+                foreach (Point p in _highlightedDays) {
+                    Calendar.Point cp = new Calendar.Point {
+                        X = p.X,
+                        Y = p.Y
+                    };
+                    c.ActiveDays.Add(cp);
+                }
+
+                CreateJson<Calendar>(GetPath(_calendarName), c);
             }
 
             InputHelper.UpdateCleanup();
@@ -106,6 +129,31 @@ namespace GameProject {
             _s.End();
 
             base.Draw(gameTime);
+        }
+
+        public static string RootPath => AppDomain.CurrentDomain.RelativeSearchPath ?? AppDomain.CurrentDomain.BaseDirectory;
+        public static string GetPath(string name) => Path.Combine(RootPath, name);
+        public static T LoadJson<T>(string name) where T : new() {
+            T json;
+
+            string jsonPath = GetPath(name);
+
+            if (File.Exists(jsonPath)) {
+                json = JsonSerializer.Deserialize<T>(File.ReadAllText(jsonPath));
+            } else {
+                json = new T();
+            }
+
+            return json;
+        }
+        public static void CreateJson<T>(string name, T content) where T : new() {
+            string jsonPath = GetPath(name);
+
+            var options = new JsonSerializerOptions {
+                WriteIndented = true
+            };
+            string jsonString = JsonSerializer.Serialize(content, options);
+            File.WriteAllText(jsonPath, jsonString);
         }
 
         private int maxDays(int year) {
@@ -187,5 +235,7 @@ namespace GameProject {
                 ),
                 new KeyboardCondition(Keys.S)
             );
+
+        string _calendarName = "calendar.json";
     }
 }
