@@ -25,6 +25,9 @@ namespace GameProject {
         protected override void LoadContent() {
             _s = new SpriteBatch(GraphicsDevice);
 
+            _width = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _height = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
             _r = new RenderTarget2D(GraphicsDevice, _width, _height);
 
             DateTime now = DateTime.Now;
@@ -194,8 +197,8 @@ namespace GameProject {
         SpriteBatch _s;
 
         RenderTarget2D _r;
-        int _width = 1920;
-        int _height = 1080;
+        int _width;
+        int _height;
 
         int _year;
         int _maxDays;
