@@ -27,11 +27,14 @@ namespace GameProject {
 
             _r = new RenderTarget2D(GraphicsDevice, _width, _height);
 
+            DateTime now = DateTime.Now;
+            _year = now.Year;
             _maxDays = maxDays(_year);
             _daySize = Math.Min(RealWidth / _maxDays, RealHeight / 12);
 
             Assets.Setup(Content, GraphicsDevice);
 
+            _calendarName = $"calendar-{_year}.json";
             Calendar c = LoadJson<Calendar>(GetPath(_calendarName));
 
             foreach (Calendar.Point cp in c.ActiveDays) {
@@ -194,7 +197,7 @@ namespace GameProject {
         int _width = 1920;
         int _height = 1080;
 
-        int _year = 2020;
+        int _year;
         int _maxDays;
 
         int _daySize;
@@ -236,6 +239,6 @@ namespace GameProject {
                 new KeyboardCondition(Keys.S)
             );
 
-        string _calendarName = "calendar.json";
+        string _calendarName;
     }
 }
