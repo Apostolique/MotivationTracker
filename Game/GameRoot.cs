@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -19,6 +19,12 @@ namespace GameProject {
 
         protected override void Initialize() {
             Window.AllowUserResizing = true;
+
+            var ratio = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.AspectRatio;
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - (int)(200 * ratio);
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
+            _graphics.ApplyChanges();
+
             base.Initialize();
         }
 
