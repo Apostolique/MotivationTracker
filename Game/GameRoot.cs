@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -44,14 +44,8 @@ namespace GameProject {
             Assets.Setup(Content, GraphicsDevice);
 
             _calendarName = $"calendar-{_year}.json";
-            Calendar c = LoadJson<Calendar>(GetPath(_calendarName));
 
-            foreach (Calendar.Point cp in c.ActiveDays) {
-                Point p = new Point(cp.X, cp.Y);
-                if (!_highlightedDays.Contains(p)) {
-                    _highlightedDays.Add(p);
-                }
-            }
+            LoadCalendar(_calendarName);
 
             InputHelper.Setup(this);
         }
@@ -71,6 +65,7 @@ namespace GameProject {
                     } else {
                         _highlightedDays.Add(_hovered.Value);
                     }
+                    SaveCalendar(_calendarName);
                 }
             }
 
@@ -83,22 +78,34 @@ namespace GameProject {
                 string imageName = $"{name}.png";
                 using Stream file = File.OpenWrite(GetPath(imageName));
                 _r.SaveAsPng(file, _width, _height);
-
-                Calendar c = new Calendar();
-
-                foreach (Point p in _highlightedDays) {
-                    Calendar.Point cp = new Calendar.Point {
-                        X = p.X,
-                        Y = p.Y
-                    };
-                    c.ActiveDays.Add(cp);
-                }
-
-                CreateJson<Calendar>(GetPath(_calendarName), c);
             }
 
             InputHelper.UpdateCleanup();
             base.Update(gameTime);
+        }
+
+        private void LoadCalendar(string name) {
+            Calendar c = LoadJson<Calendar>(GetPath(name));
+
+            foreach (Calendar.Point cp in c.ActiveDays) {
+                Point p = new Point(cp.X, cp.Y);
+                if (!_highlightedDays.Contains(p)) {
+                    _highlightedDays.Add(p);
+                }
+            }
+        }
+        private void SaveCalendar(string name) {
+            Calendar c = new Calendar();
+
+            foreach (Point p in _highlightedDays) {
+                Calendar.Point cp = new Calendar.Point {
+                    X = p.X,
+                    Y = p.Y
+                };
+                c.ActiveDays.Add(cp);
+            }
+
+            CreateJson<Calendar>(GetPath(name), c);
         }
 
         protected override void Draw(GameTime gameTime) {
