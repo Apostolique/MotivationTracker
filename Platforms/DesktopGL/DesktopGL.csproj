@@ -17,7 +17,8 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
-    <PackageReference Include="Apos.Input" Version="1.0.1" />
+    <PackageReference Include="Apos.History" Version="1.1.0" />
+    <PackageReference Include="Apos.Input" Version="2.3.2" />
     <PackageReference Include="FontStashSharp.MonoGame" Version="0.9.0" />
     <PackageReference Include="nulastudio.NetCoreBeauty" Version="1.2.9.2" />
   </ItemGroup>

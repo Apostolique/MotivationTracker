@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using Apos.History;
 using Apos.Input;
+using Track = Apos.Input.Track;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -61,13 +63,16 @@ namespace GameProject {
             if (_click.Pressed()) {
                 if (_hovered.HasValue) {
                     if (_highlightedDays.Contains(_hovered.Value)) {
-                        _highlightedDays.Remove(_hovered.Value);
+                        HistoryRemove(_hovered.Value);
                     } else {
-                        _highlightedDays.Add(_hovered.Value);
+                        HistoryAdd(_hovered.Value);
                     }
                     SaveCalendar(_calendarName);
                 }
             }
+
+            if (_redo.Pressed()) _historyHandler.Redo();
+            if (_undo.Pressed()) _historyHandler.Undo();
 
             if (_save.Pressed()) {
                 DateTime now = DateTime.Now;
@@ -82,6 +87,28 @@ namespace GameProject {
 
             InputHelper.UpdateCleanup();
             base.Update(gameTime);
+        }
+
+        private void HistoryRemove(Point p) {
+            _historyHandler.Add(() => {
+                Add(p);
+            }, () => {
+                Remove(p);
+            });
+        }
+        private void HistoryAdd(Point p) {
+            _historyHandler.Add(() => {
+                Remove(p);
+            }, () => {
+                Add(p);
+            });
+        }
+
+        private void Remove(Point p) {
+            _highlightedDays.Remove(p);
+        }
+        private void Add(Point p) {
+            _highlightedDays.Add(p);
         }
 
         private void LoadCalendar(string name) {
@@ -255,6 +282,29 @@ namespace GameProject {
                 new KeyboardCondition(Keys.S)
             );
 
+        ICondition _undo =
+            new AllCondition(
+                new AnyCondition(
+                    new KeyboardCondition(Keys.LeftControl),
+                    new KeyboardCondition(Keys.RightControl)
+                ),
+                new Track.KeyboardCondition(Keys.Z)
+            );
+        ICondition _redo =
+            new AllCondition(
+                new AnyCondition(
+                    new KeyboardCondition(Keys.LeftControl),
+                    new KeyboardCondition(Keys.RightControl)
+                ),
+                new AnyCondition(
+                    new KeyboardCondition(Keys.LeftShift),
+                    new KeyboardCondition(Keys.RightShift)
+                ),
+                new Track.KeyboardCondition(Keys.Z)
+            );
+
         string _calendarName;
+
+        HistoryHandler _historyHandler = new HistoryHandler();
     }
 }
